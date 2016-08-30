@@ -38,8 +38,13 @@ class Game(sge.dsp.Game):
 class Room(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
         for tile in grid.grid:
-            if tile.is_alive:
-                total_neighbors = grid.get_total_neighbors(tile.x, tile.y)
+            alive, dead = grid.get_total_neighbors(tile.x, tile.y)
+            col = tile.x // TILE_DIMS
+            row = tile.y // TILE_DIMS
+            if tile.is_alive and (
+                    alive < 2 or alive > 3) or (
+                    not tile.is_alive and dead == 3):
+                grid.change_cell(row, col)
             sge.game.project_sprite(tile.sprite, 0, tile.x, tile.y)
 
 
@@ -69,16 +74,20 @@ class Grid:
         )
 
     def get_total_neighbors(self, x, y):
-        total = 0
+        total_live = 0
+        total_dead = 0
         col = x // TILE_DIMS
         row = y // TILE_DIMS
         for i in range(row-1, row+2):
             for j in range(col-1, col+2):
-                if 0 <= i < GRID_DIMS and 0 <= j < GRID_DIMS and (
-                        (i, j) != (row, col)):
+                if (i, j) != (row, col):
+                    i %= GRID_DIMS
+                    j %= GRID_DIMS
                     if self.grid[i*GRID_DIMS + j].is_alive:
-                        total += 1
-        return total
+                        total_live += 1
+                    else:
+                        total_dead += 1
+        return total_live, total_dead
 
 
 Game(

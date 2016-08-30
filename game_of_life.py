@@ -38,6 +38,8 @@ class Game(sge.dsp.Game):
 class Room(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
         for tile in grid.grid:
+            if tile.is_alive:
+                total_neighbors = grid.get_total_neighbors(tile.x, tile.y)
             sge.game.project_sprite(tile.sprite, 0, tile.x, tile.y)
 
 
@@ -65,6 +67,18 @@ class Grid:
             mouse_y_loc*TILE_DIMS, mouse_x_loc*TILE_DIMS,
             not self.grid[actual_loc].is_alive
         )
+
+    def get_total_neighbors(self, x, y):
+        total = 0
+        col = x // TILE_DIMS
+        row = y // TILE_DIMS
+        for i in range(row-1, row+2):
+            for j in range(col-1, col+2):
+                if 0 <= i < GRID_DIMS and 0 <= j < GRID_DIMS and (
+                        (i, j) != (row, col)):
+                    if self.grid[i*GRID_DIMS + j].is_alive:
+                        total += 1
+        return total
 
 
 Game(

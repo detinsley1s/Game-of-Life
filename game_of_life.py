@@ -27,7 +27,7 @@ class Game(sge.dsp.Game):
     def event_close(self):
         self.end()
 
-    def event_mouse_button_release(self, button):
+    def event_mouse_button_press(self, button):
         mouse_x_loc = int(sge.mouse.get_y() // TILE_DIMS)
         mouse_y_loc = int(sge.mouse.get_x() // TILE_DIMS)
         if 0 <= mouse_y_loc < GRID_DIMS and 0 <= mouse_x_loc < GRID_DIMS:

@@ -20,10 +20,19 @@ TILE_DIMS = WINDOW_HEIGHT // GRID_DIMS
 
 
 class Game(sge.dsp.Game):
+    def event_key_press(self, key, char):
+        if key == 'escape':
+            self.event_close()
+
+    def event_close(self):
+        self.end()
+
     def event_mouse_button_release(self, button):
         mouse_x_loc = int(sge.mouse.get_y() // TILE_DIMS)
         mouse_y_loc = int(sge.mouse.get_x() // TILE_DIMS)
-        grid.change_cell(mouse_x_loc, mouse_y_loc)
+        if 0 <= mouse_y_loc < GRID_DIMS and 0 <= mouse_x_loc < GRID_DIMS:
+            if button == 'left':
+                grid.change_cell(mouse_x_loc, mouse_y_loc)
 
 
 class Room(sge.dsp.Room):

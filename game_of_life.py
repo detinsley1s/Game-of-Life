@@ -44,6 +44,43 @@ class Game(sge.dsp.Game):
 
 class Room(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
+        # Display the instructions
+        sge.game.project_text(
+            LABEL_FONT, 'MOUSE', WINDOW_WIDTH - 137, 147,
+            color=sge.gfx.Color('black'), halign='left', valign='middle'
+        )
+        
+        sge.game.project_text(
+            INSTRUCTIONS_FONT, 'Left Click: Add Tiles',
+            WINDOW_WIDTH - 177, 197,
+            color=sge.gfx.Color('black'), halign='left', valign='middle'
+        )
+        sge.game.project_text(
+            LABEL_FONT, 'KEYBOARD', WINDOW_WIDTH - 155, WINDOW_HEIGHT - 287,
+            color=sge.gfx.Color('black'), halign='left', valign='middle'
+        )
+
+        sge.game.project_text(
+            INSTRUCTIONS_FONT, 'C: Clear Board',
+            WINDOW_WIDTH - 177, WINDOW_HEIGHT - 237,
+            color=sge.gfx.Color('black'), halign='left', valign='middle'
+        )
+        sge.game.project_text(
+            INSTRUCTIONS_FONT, 'R: Randomize Board', WINDOW_WIDTH - 177,
+            WINDOW_HEIGHT - 207, color=sge.gfx.Color('black'), halign='left',
+            valign='middle'
+        )
+        sge.game.project_text(
+            INSTRUCTIONS_FONT, 'S: Start Animation', WINDOW_WIDTH - 177,
+            WINDOW_HEIGHT - 177, color=sge.gfx.Color('black'), halign='left',
+            valign='middle'
+        )
+        sge.game.project_text(
+            INSTRUCTIONS_FONT, 'Esc: Exit Game', WINDOW_WIDTH - 177,
+            WINDOW_HEIGHT - 147, color=sge.gfx.Color('black'), halign='left',
+            valign='middle'
+        )
+
         for tile in grid.grid:
             if grid.grid_is_alive:
                 alive = grid.get_total_neighbors(tile.x, tile.y)
@@ -83,7 +120,7 @@ class Grid:
         self.grid[actual_loc] = Tile(
             mouse_y_loc*TILE_DIMS, mouse_x_loc*TILE_DIMS,
             not self.grid[actual_loc].is_alive,
-            changed = True
+            changed=True
         )
 
     def get_total_neighbors(self, x, y):
@@ -123,6 +160,10 @@ Game(
     grab_input=True, collision_events_enabled=False
 )
 
+# Create the font
+INSTRUCTIONS_FONT = sge.gfx.Font(name='fonts/horta.ttf', size=25)
+LABEL_FONT = sge.gfx.Font(name='fonts/horta.ttf', size=36, underline=True)
+
 DEAD_SPRITE = (
     sge.gfx.Sprite(width=TILE_DIMS, height=TILE_DIMS, origin_x=0, origin_y=0)
 )
@@ -141,7 +182,7 @@ ALIVE_SPRITE.draw_rectangle(
 
 grid = Grid()
 
-BACKGROUND = sge.gfx.Background([], sge.gfx.Color("blue"))
+BACKGROUND = sge.gfx.Background([], sge.gfx.Color("gray"))
 sge.game.start_room = Room([], background=BACKGROUND)
 
 sge.game.mouse.visible = True

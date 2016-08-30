@@ -38,13 +38,14 @@ class Game(sge.dsp.Game):
 class Room(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
         for tile in grid.grid:
-            alive, dead = grid.get_total_neighbors(tile.x, tile.y)
-            col = tile.x // TILE_DIMS
-            row = tile.y // TILE_DIMS
-            if tile.is_alive and (
-                    alive < 2 or alive > 3) or (
-                    not tile.is_alive and dead == 3):
-                grid.change_cell(row, col)
+            if game_is_running:
+                alive, dead = grid.get_total_neighbors(tile.x, tile.y)
+                col = tile.x // TILE_DIMS
+                row = tile.y // TILE_DIMS
+                if tile.is_alive and (
+                        alive < 2 or alive > 3) or (
+                        not tile.is_alive and dead == 3):
+                    grid.change_cell(row, col)
             sge.game.project_sprite(tile.sprite, 0, tile.x, tile.y)
 
 
@@ -118,6 +119,8 @@ BACKGROUND = sge.gfx.Background([], sge.gfx.Color("blue"))
 sge.game.start_room = Room([], background=BACKGROUND)
 
 sge.game.mouse.visible = True
+
+game_is_running = False
 
 if __name__ == '__main__':
     sge.game.start()

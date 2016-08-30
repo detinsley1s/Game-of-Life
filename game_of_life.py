@@ -13,8 +13,6 @@ import arcade
 # dimensions of window
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-
-# dimensions of grid and tiles
 GRID_DIMS = 100
 TILE_DIMS = WINDOW_HEIGHT // GRID_DIMS
 
@@ -28,6 +26,11 @@ class MainWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.grid.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        col = x // TILE_DIMS
+        row = y // TILE_DIMS
+        self.grid.grid[row*GRID_DIMS + col].is_alive = not self.grid.grid[row*GRID_DIMS + col].is_alive
 
 
 class Tile:

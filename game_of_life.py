@@ -110,7 +110,12 @@ class Grid:
                     self.change_cell(col, row)
 
     def clear(self):
-        pass
+        for row in range(GRID_DIMS):
+            for col in range(GRID_DIMS):
+                self.grid[col*GRID_DIMS + row].is_alive = True
+                self.change_cell(col, row)
+        self.grid_is_alive = False
+
 
 Game(
     width=WINDOW_WIDTH, height=WINDOW_HEIGHT,

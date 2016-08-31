@@ -67,6 +67,7 @@ class Game(sge.dsp.Game):
         mouse_x_loc = int(sge.mouse.get_y() // TILE_DIMS)
         mouse_y_loc = int(sge.mouse.get_x() // TILE_DIMS)
 
+        # Bring to life or kill a cell
         if 0 <= mouse_y_loc < GRID_DIMS and 0 <= mouse_x_loc < GRID_DIMS:
             if button == 'left':
                 grid.change_cell(mouse_x_loc, mouse_y_loc)
@@ -126,8 +127,15 @@ class Room(sge.dsp.Room):
             valign='middle'
         )
 
-        # Draw the cells that are alive and determine which will
-        # continue living or will die
+        # Determine which cells will continue living and which will die.
+        # Rules:
+        #   -- Living cells surrounded by fewer than 2 neighbors will die.
+        #      This is a case of underpopulation.
+        #   -- Living cells surrounded by more than 3 neighbors will die.
+        #      This is a case of overpopulation.
+        #   -- Dead cells surrounded by exactly 3 neighbors will revive.
+        #      This is a case of reproduction.
+        #   -- Any other cells will continue living or being dead.
         for tile in grid.grid:
             if grid.grid_is_alive:
                 alive = grid.get_total_neighbors(tile.x, tile.y)
@@ -136,6 +144,8 @@ class Room(sge.dsp.Room):
                 if tile.is_alive and (alive < 2 or alive > 3) or (
                         not tile.is_alive and alive == 3):
                     grid.change_cell(row, col)
+
+        # Display the cells
         for idx, tile in enumerate(grid.grid):
             sge.game.project_sprite(tile.sprite, 0, tile.x, tile.y)
             grid.grid[idx].changed = False
